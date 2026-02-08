@@ -1,4 +1,5 @@
 from flask import Flask, jsonify
+import socket
 
 app = Flask(__name__)
 
@@ -6,7 +7,7 @@ app = Flask(__name__)
 def home():
     return jsonify({
         "service": "python-backend",
-        "status": "running"
+        "instance": socket.gethostname()
     })
 
 @app.route("/health")

@@ -1,8 +1,7 @@
-
-
 services:
   nginx:
     build: ./nginx
+    image: nginx:latest
     ports:
       - "80:80"
     depends_on:
@@ -12,9 +11,52 @@ services:
 
   app1:
     build: ./app
+    image: app1:v1
+    depends_on:
+      - postgres
+      - mysql
+      - redis
 
   app2:
     build: ./app
+    image: app2:v1
+    depends_on:
+      - postgres
+      - mysql
+      - redis
 
   app3:
     build: ./app
+    image: app3:v1
+    depends_on:
+      - postgres
+      - mysql
+      - redis
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: postgresdb
+      POSTGRES_USER: krishna
+      POSTGRES_PASSWORD: 1729
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: mysqldb
+      MYSQL_USER: rama
+      MYSQL_PASSWORD: 1729
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysqldata:/var/lib/mysql
+
+  redis:
+    image: redis:7
+
+volumes:
+  pgdata:
+  mysqldata:
+
+

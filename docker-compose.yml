@@ -1,4 +1,23 @@
 services:
+
+  pg-backup:
+  image: postgres:15
+  depends_on:
+    - postgres
+  volumes:
+    - ./db/backups/postgres:/backups
+  environment:
+    PGPASSWORD: 1729
+  entrypoint: >
+    sh -c "
+    while true; do
+      echo 'Starting PostgreSQL backup...';
+      pg_dump -h postgres -U krishna postgresdb > /backups/pg_$(date +%F_%H-%M-%S).sql;
+      echo 'Backup completed';
+      sleep 3600;
+    done
+    "
+
   nginx:
     build: ./nginx
     image: nginx:latest
@@ -41,6 +60,18 @@ services:
       POSTGRES_PASSWORD: 1729
     volumes:
       - pgdata:/var/lib/postgresql/data
+  
+  postgres-replica:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: rama
+      POSTGRES_PASSWORD: 1729
+    command: >
+      bash -c "
+      until pg_basebackup -h postgres-primary -D /var/lib/postgresql/data -U rama -vP -W;
+      do sleep 5; done;
+      postgres
+      "
 
   mysql:
     image: mysql:8

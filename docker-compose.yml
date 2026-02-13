@@ -3,6 +3,7 @@ services:
   nginx:
     build: ./nginx
     image: nginx:latest
+    container_name: ng-main
     ports:
       - "80:80"
     depends_on:
@@ -12,7 +13,8 @@ services:
 
   app1:
     build: ./app
-    image: app1:v1
+    image: ng-app:v1
+    container_name: ng-app
     depends_on:
       - postgres
       - mysql
@@ -20,7 +22,8 @@ services:
 
   app2:
     build: ./app
-    image: app2:v1
+    image: ng-app2:v1
+    container_name: ng-app2
     depends_on:
       - postgres
       - mysql
@@ -28,7 +31,8 @@ services:
 
   app3:
     build: ./app
-    image: app3:v1
+    image: ng-app3:v1
+    container_name: ng-app3
     depends_on:
       - postgres
       - mysql
@@ -103,3 +107,4 @@ services:
 
   redis:
     image: redis:7
+    container_name: redis

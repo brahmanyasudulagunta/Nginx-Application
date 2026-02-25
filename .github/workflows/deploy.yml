@@ -32,7 +32,7 @@ jobs:
 
       - name: Setup Kubeconfig
         run: |
-          echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > kubeconfig
+          echo "${{ secrets.KUBECONFIG }}" | base64 --decode > kubeconfig
         env:
           KUBECONFIG: kubeconfig
 

@@ -37,6 +37,15 @@ pipeline {
                 sh "docker push $IMAGE_NAME:$IMAGE_TAG"
             }
         }
+    
+        stage('Debug Kube') {
+            steps {
+                sh '''
+                   kubectl config current-context
+                   kubectl get deployments -A
+                   '''
+            }
+        }
 
         stage('Deploy to Kubernetes') {
             steps {

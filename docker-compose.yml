@@ -5,7 +5,7 @@ services:
     image: nginx:latest
     container_name: ng-main
     ports:
-      - "80:80"
+      - "81:80"
     depends_on:
       - app1
       - app2
@@ -58,52 +58,6 @@ services:
       MYSQL_ROOT_PASSWORD: root
     volumes:
       - ./db/mysql/data:/var/lib/mysql
-
-  pg-backup:
-    image: postgres:15
-    container_name: pg-backup
-    depends_on:
-      - postgres
-    volumes:
-      - ./db/backups/postgres:/backups
-    environment:
-      - PGPASSWORD=1729
-    entrypoint: |
-      sh -c "
-      echo 'Waiting for PostgreSQL...';
-      until pg_isready -h postgres -U krishna; do
-        sleep 2;
-      done;
-      echo 'PostgreSQL ready. Waiting for tables to be created...';
-      sleep 30;
-      while true; do
-        pg_dump -h postgres -U krishna -f /backups/pg_$$(date +%F_%H%M).sql postgresdb;
-        echo 'Postgres backup done';
-        sleep 3600;
-      done
-      "
-
-  mysql-backup:
-    image: mysql:8
-    container_name: mysql-backup
-    depends_on:
-      - mysql
-    volumes:
-      - ./db/backups/mysql:/backups
-    entrypoint: |
-      sh -c "
-      echo 'Waiting for MySQL...';
-      until mysqladmin ping -h mysql -u rama -p1729 --silent; do
-        sleep 2;
-      done;
-      echo 'MySQL ready. Waiting for tables to be created...';
-      sleep 30;
-      while true; do
-        mysqldump -h mysql -u rama -p1729 --no-tablespaces mysqldb --result-file=/backups/mysql_$$(date +%F_%H%M).sql;
-        echo 'MySQL backup done';
-        sleep 3600;
-      done
-      "
 
   redis:
     image: redis:7
